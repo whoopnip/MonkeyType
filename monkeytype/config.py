@@ -9,6 +9,7 @@ import os
 import pathlib
 import sys
 import sysconfig
+import site
 
 from abc import (
     ABCMeta,
@@ -91,6 +92,9 @@ class Config(metaclass=ABCMeta):
 
 
 lib_paths = {sysconfig.get_path(n) for n in ['stdlib', 'purelib', 'platlib']}
+# Add paths from site module such as dist-packages
+dist_paths = {path for path in site.getsitepackages()}
+lib_paths.update(dist_paths)
 # if in a virtualenv, also exclude the real stdlib location
 venv_real_prefix = getattr(sys, 'real_prefix', None)
 if venv_real_prefix:
